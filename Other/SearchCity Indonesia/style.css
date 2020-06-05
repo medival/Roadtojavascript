@@ -1,0 +1,83 @@
+html {
+    background: #ffc600;
+    border: border-box;
+    font-family: 'helvetica neue';
+    font-size: 1rem;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    /* display: flex; */
+}
+
+input {
+    width: 100%;
+    padding: 20px;
+    background-color: #fefefe;
+}
+
+.search-form {
+    max-width: 400px;
+    margin: 50px auto;
+}
+
+input.search {
+    margin: 0;
+    text-align: center;
+    border: 10px solid #F7F7F7;
+    font-size: 40px;
+    width: 120%;
+    outline: 0;
+    top: 10px;
+}
+
+.suggestions {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.suggestions li {
+    list-style: none;
+    width: 480px;
+    height: 1rem;
+    /* position: relative; */
+    margin: 0 auto;
+    text-align: center;
+    background-color: #fff;
+    margin-left: 1.4rem;
+    padding: 1rem 10px 1rem 10px;
+    font-family: 'helvetica neue';
+    font-size: 1rem;
+    text-transform: capitalize;
+    display: flex;
+}
+
+.suggestions li:nth-child(even) {
+    background-color: #fefefe;
+}
+
+.suggestions li:nth-child(odd) {
+    background-color: #f7f7f7;
+}
+
+.displayResult {
+    text-transform: capitalize;
+}
+
+span.sub_district {
+    margin-left: 1rem;
+}
+
+span.postalCode {
+    margin-left: auto;
+}
+
+.hl {
+    background: #ffc600;
+}

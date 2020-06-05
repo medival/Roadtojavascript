@@ -8,7 +8,6 @@
 </head>
 
 <body>
-
     <form class="search-form">
         <input type="text" class="search" placeholder="City or State">
         <ul class="suggestions">
@@ -42,7 +41,7 @@
             const html = matchArray.map(place => {
                 const regex = new RegExp(this.value, 'gi');
                 const cityName = place.city.replace(regex, `<span class="hl"> ${this.value} </span>`)
-                const stateName = place.city.replace(regex, `<span class="hl"> ${this.value} </span>`)
+                const stateName = place.state.replace(regex, `<span class="hl"> ${this.value} </span>`)
                 return `
                 <li>
                 <span name="name"> ${cityName} ${stateName}</span>

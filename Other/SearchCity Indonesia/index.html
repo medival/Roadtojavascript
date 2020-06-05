@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title> Cari Kode POS </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- <div class="container"> -->
+    <form class="search-form" action="#">
+        <input type="text" class="search" placeholder="Desa atau Kecamatan">
+        <ul class="suggestions">
+            <li class="displayResult">
+                <span class="urban"> Desa </span>
+                <span class="sub_district"> Kecamatan </span>
+                <span class="postalCode"> Kode Pos </span>
+            </li>
+        </ul>
+    </form>
+    <!-- </div> -->
+    <script>
+        const endpoint = '/Other/SearchCity Indonesia/merge_province_postal_full.json';
+        const postal_code = [];
+
+        fetch(endpoint)
+            .then(result => result.json())
+            .then(data => postal_code.push(...data))
+
+        function findMatches(wordsToMatch, postal_code) {
+            return postal_code.filter(place => {
+                const regex = new RegExp(wordsToMatch, 'gi');
+                return place.urban.match(regex)
+            })
+        }
+
+        function displayMatches() {
+            const matchArray = findMatches(this.value, postal_code);
+            const html = matchArray.map(place => {
+                const regex = new RegExp(this.value, 'gi');
+                const urban = place.urban.replace(regex, `<span class="hl"> ${this.value}</span`);
+                return `
+                <li>
+                    <span class="urban"> ${urban} </span>
+                    <span class="sub_district"> ${place.sub_district} </span>
+                    <span class="postalCode"> ${place.postal_code}</span>
+                </li>
+                `
+            }).join('');
+            suggestions.innerHTML = html;
+        }
+
+        const searchInput = document.querySelector('.search');
+        const suggestions = document.querySelector('.suggestions');
+
+        searchInput.addEventListener('change', displayMatches);
+        searchInput.addEventListener('keyup', function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+            }
+        })
+    </script>
+</body>
+
+</html>
