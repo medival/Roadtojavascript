@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Book App List </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" defer>
+    </script>
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <div class="container justify-content-center col-5 mt-5">
+        <h1 class="display-4 text-center"> My <span class="text-primary">Book</span>List</h1>
+        <form action="#" id="formBook">
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for=""> Title </label>
+                    <input type="text" name="inputTitle" id="inputTitle" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for=""> Author </label>
+                    <input type="text" name="inputAuthor" id="inputAuthor" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for=""> ISBN </label>
+                    <input type="text" name="inputISBN" id="inputISBN" class="form-control">
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary btn-block" id="buttonAdd"></input>
+        </form>
+        <table class="table table-striped mt-5">
+            <thead class="title">
+                <td> Title </td>
+                <td> Author </td>
+                <td> ISBN </td>
+            </thead>
+            <tbody id='bookList'>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
