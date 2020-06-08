@@ -8,6 +8,7 @@ class Admin extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Menu_model');
+        $this->load->library('Uuid');
     }
 
     public function index()
@@ -21,15 +22,17 @@ class Admin extends CI_Controller
     public function menu()
     {
         $data = [
-            'title' => 'Menu'
+            'title' => 'Menu',
+            'menu' => $this->Menu_model->get()
         ];
         $this->load->view('admin/menu', $data);
     }
 
     public function order()
     {
+
         $data = [
-            'title' => 'Order'
+            'title' => 'Order',
         ];
         $this->load->view('admin/order', $data);
     }
@@ -42,10 +45,28 @@ class Admin extends CI_Controller
 
     public function addToCart()
     {
-        $menu = $this->input->post('MenuID');
+        $OrderID = $this->Menu_model->getOrderID();
+        $OrderID = $OrderID->OrderID;
+        if ($OrderID) {
+            $data = $this->Menu_model->addOtherItemToCart($OrderID);
+            return $data;
+        }
 
-        var_dump($menu);
+        if (!$OrderID) {
+            $data = $this->Menu_model->addItemToCart();
+            return $data;
+        }
     }
+
+    public function isCheckout()
+    {
+        $OrderID = $this->Menu_model->getOrderID();
+        $OrderID = $OrderID->OrderID;
+    }
+
+    // public function showCart()
+    // {
+    // }
 }
 
 /* End of file: Admin.php */
