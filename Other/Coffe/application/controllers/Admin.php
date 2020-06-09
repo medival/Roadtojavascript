@@ -46,7 +46,12 @@ class Admin extends CI_Controller
     public function addToCart()
     {
         $OrderID = $this->Menu_model->getOrderID();
-        $OrderID = $OrderID->OrderID;
+        if ($OrderID != NULL) {
+            $OrderID = $OrderID->OrderID;
+        } else if ($OrderID == NULL) {
+            echo 'create new cart';
+        }
+
         if ($OrderID) {
             $MenuID = $this->input->post('MenuID');
             $resultCheck = $this->Menu_model->CheckItemOnCart($MenuID, $OrderID);
@@ -61,7 +66,6 @@ class Admin extends CI_Controller
             $this->Menu_model->AddOtherItemToCart($OrderID, $MenuID);
         }
 
-
         if (!$OrderID) {
             $data = $this->Menu_model->addItemToNewCart();
             return $data;
@@ -74,14 +78,18 @@ class Admin extends CI_Controller
         $OrderID = $OrderID->OrderID;
     }
 
-    public function checkQuantity()
+    public function showCart()
     {
-        $return = $this->Menu_model->CheckItemQuantity(71);
-        var_dump($return);
+        $OrderID = $this->Menu_model->getOrderID();
+        if ($OrderID != NULL) {
+            $OrderID = $OrderID->OrderID;
+        } else {
+            echo 'no item';
+        }
+        // var_dump($OrderID);
+        $data =  $this->Menu_model->getItemOnCart($OrderID);
+        echo json_encode($data);
     }
-    // public function showCart()
-    // {
-    // }
 }
 
 /* End of file: Admin.php */

@@ -98,8 +98,29 @@ class Menu_model extends CI_Model
         return $this->db->query("SELECT Quantity FROM tb_Order WHERE ID = $resultID LIMIT 1")->row();
     }
 
-    public function AddOtherItemToCart()
+    public function AddOtherItemToCart($OrderID, $MenuID)
     {
+        $Price = $this->CheckItemPrice($MenuID);
+        $Price = $Price->Price;
+        $Quantity = 1;
+        $data = array(
+            'OrderID' => $OrderID,
+            'MenuID' => $MenuID,
+            'Quantity' => $Quantity,
+            'Total' => $Price *  $Quantity,
+            'Checkout' => 0
+        );
+
+        return $this->db->insert($this->_table_Order, $data);
+    }
+
+    public function getItemOnCart($OrderID)
+    {
+        return $this->db->query("SELECT O.ID, M.Menu, O.OrderID, O.MenuID, O.Quantity, M.Image, M.Price
+                                FROM $this->_table_Order AS O
+                                JOIN $this->_table_Menu AS M
+                                ON O.MenuID = M.MenuID
+                                WHERE OrderID = '$OrderID' AND Checkout = 0")->result_array();
     }
 }   
     /* End of file: Menu_model.php */

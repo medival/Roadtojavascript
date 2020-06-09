@@ -13,48 +13,7 @@ $this->load->view('_partials/header');
     </section>
     <div class="container">
         <div class="columns">
-            <div class="column is-8">
-                <article class="media">
-                    <figure class="media-left">
-                        <p class="image is-128x128 is-round">
-                            <img src="https://bulma.io/images/placeholders/128x128.png">
-                        </p>
-                    </figure>
-                    <div class="media-content" style="width: 500px; margin-top: 1.5rem">
-                        <div class="content">
-                            <div class="columns">
-                                <div class="column is-5">
-                                    <p class="title is-4">
-                                        Americano
-                                    </p>
-                                    <p class="subtitle is-5">
-                                        Rp. 14000
-                                    </p>
-                                </div>
-                                <div class="column is-5" style="margin-top: 0.5rem">
-                                    <div class="field has-addons">
-                                        <p class="control">
-                                            <a href="" class="button is-primary">
-                                                <i class="fa fa-angle-left" aria-hidden="true"></i>
-                                            </a>
-                                        </p>
-                                        <p class="control" style="width: 3rem">
-                                            <input type="text" class="input" style="text-align:center">
-                                        </p>
-                                        <p class="control">
-                                            <div class="button is-primary">
-                                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                            </div>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="column" style="margin-top: 1rem">
-                                    <button class="delete"></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+            <div class="column is-8" id="CartItemList">
             </div>
             <div class="column is-5">
                 <div class="card events-card">
@@ -66,79 +25,7 @@ $this->load->view('_partials/header');
                     <div class="card-table">
                         <div class="content">
                             <table class="table">
-                                <tbody>
-                                    <tr">
-                                        <td width="3rem"></i></td>
-                                        <td>
-                                            <p class="subtitle is-6">
-                                                Americano
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="subtitle is-6" style="text-align: right;">
-                                                1
-                                            </p>
-                                        </td>
-                                        <td style="text-align:right">
-                                            <p class="subtitle is-6">
-                                                Rp. 75000
-                                            </p>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="3rem"></i></td>
-                                            <td>
-                                                <p class="subtitle is-6">
-                                                    Capuccino Mocca
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="subtitle is-6" style="text-align: right;">
-                                                    1
-                                                </p>
-                                            </td>
-                                            <td style="text-align:right">
-                                                <p class="subtitle is-6">
-                                                    Rp. 75000
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="3rem"></i></td>
-                                            <td>
-                                                <p class="subtitle is-6">
-                                                    Capuccino Mocca
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="subtitle is-6" style="text-align: right;">
-                                                    1
-                                                </p>
-                                            </td>
-                                            <td style="text-align:right">
-                                                <p class="subtitle is-6">
-                                                    Rp. 75000
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="3rem"></i></td>
-                                            <td>
-                                                <p class="subtitle is-6">
-                                                    Ultraa
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="subtitle is-6" style="text-align: right;">
-                                                    1
-                                                </p>
-                                            </td>
-                                            <td style="text-align:right">
-                                                <p class="subtitle is-6">
-                                                    Rp. 75000
-                                                </p>
-                                            </td>
-                                        </tr>
+                                <tbody id="TableItem">
                                 </tbody>
                             </table>
                         </div>
@@ -162,3 +49,87 @@ $this->load->view('_partials/header');
 <?php
 $this->load->view('_partials/footer')
 ?>
+<script>
+    // $(document).ready(function() {
+    // ShowCart();
+
+    const endpoint = '<?= base_url('admin/showcart') ?>';
+    const CartItemList = document.getElementById('CartItemList');
+    const TableItem = document.getElementById('TableItem');
+    const html = '';
+    console.log(endpoint);
+    fetch(endpoint)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach((Menu, index) => {
+                const baseUrl = '<?= base_url('/assets/menu/') ?>' + Menu['Image'];
+                CartItemList.innerHTML += `
+                <article class="media">
+                        <figure class="media-left">
+                            <p class="image is-128x128 is-round">
+                                <img src="${baseUrl}">
+                            </p>
+                        </figure>
+                        <div class="media-content" style="width: 500px; margin-top: 1.5rem">
+                            <div class="content">
+                                <div class="columns">
+                                    <div class="column is-5">
+                                        <p class="title is-4">
+                                            ${Menu['Menu']}
+                                        </p>
+                                        <p class="subtitle is-5">
+                                            Rp. ${Menu['Price']}
+                                        </p>
+                                    </div>
+                                    <div class="column is-5" style="margin-top: 0.5rem">
+                                        <div class="field has-addons">
+                                            <p class="control">
+                                                <a href="" class="button is-primary">
+                                                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                                </a>
+                                            </p>
+                                            <p class="control" style="width: 3rem">
+                                                <input type="text" class="input" style="text-align:center" value="${Menu['Quantity']}">
+                                            </p>
+                                            <p class="control">
+                                                <div class="button is-primary">
+                                                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                                </div>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="column" style="margin-top: 1rem">
+                                        <button class="delete"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                `
+
+                TableItem.innerHTML += `
+                                    <tr>
+                                        <td width="3rem"></i></td>
+                                        <td>
+                                            <p class="subtitle is-6">
+                                                ${Menu['Menu']}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="subtitle is-6" style="text-align: right;">
+                                                ${Menu['Quantity']}
+                                            </p>
+                                        </td>
+                                        <td style="text-align:right">
+                                            <p class="subtitle is-6">
+                                                Rp. ${Menu['Price'] * Menu['Quantity']}
+                                            </p>
+                                        </td>
+                                    </tr>
+                `
+            })
+        })
+        .catch(err => alert('something wrong'));
+
+    // })
+</script>
