@@ -48,12 +48,22 @@ class Admin extends CI_Controller
         $OrderID = $this->Menu_model->getOrderID();
         $OrderID = $OrderID->OrderID;
         if ($OrderID) {
-            $data = $this->Menu_model->addOtherItemToCart($OrderID);
-            return $data;
+            $MenuID = $this->input->post('MenuID');
+            $resultCheck = $this->Menu_model->CheckItemOnCart($MenuID, $OrderID);
         }
 
+        if ($resultCheck === 1) {
+            $resultID = $this->Menu_model->GetWhereID($MenuID, $OrderID);
+            $ID = $resultID->ID;
+            $this->Menu_model->UpdateItemToCart($ID, $MenuID);
+        } else if ($resultCheck === 0) {
+            $MenuID = $this->input->post('MenuID');
+            $this->Menu_model->AddOtherItemToCart($OrderID, $MenuID);
+        }
+
+
         if (!$OrderID) {
-            $data = $this->Menu_model->addItemToCart();
+            $data = $this->Menu_model->addItemToNewCart();
             return $data;
         }
     }
@@ -64,6 +74,11 @@ class Admin extends CI_Controller
         $OrderID = $OrderID->OrderID;
     }
 
+    public function checkQuantity()
+    {
+        $return = $this->Menu_model->CheckItemQuantity(71);
+        var_dump($return);
+    }
     // public function showCart()
     // {
     // }

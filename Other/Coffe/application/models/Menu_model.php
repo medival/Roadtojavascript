@@ -19,11 +19,12 @@ class Menu_model extends CI_Model
         return $query;
     }
 
-    public function addItemToCart()
+    public function addItemToNewCart()
     {
         $Quantity = 1;
         $MenuID = $this->input->post('MenuID');
-        $Price = $this->input->post('Price');
+        $Price = $this->CheckItemPrice($MenuID);
+        $Price = $Price->Price;
         $Total = $Price * $Quantity;
         $OrderID = $this->uuid->v4();
 
@@ -44,51 +45,61 @@ class Menu_model extends CI_Model
         return $this->db->query("SELECT OrderID FROM $this->_table_Order WHERE Checkout = 0 ORDER BY ID DESC LIMIT 1")->row();
     }
 
-    public function addOtherItemToCart($OrderID)
+    public function UpdateItemToCart($ID, $MenuID)
     {
-        $MenuID = $this->input->post('MenuID');
-        // $MenuID = 3;
-        // $OrderID = 'd3a37137-e5c7-4ba0-a614-fde8d1ab2c7c';
-        $Price = $this->db->query("SELECT Price FROM tb_Menu WHERE MenuID = $MenuID")->row();
+        $Price = $this->CheckItemPrice($MenuID);
         $Price = $Price->Price;
-        $Cart = $this->db->query("SELECT ID, MenuID, Quantity FROM $this->_table_Order WHERE OrderID = '$OrderID'")->result();
-        foreach ($Cart as $CartItem) {
-            $MenuIDFromCart = $CartItem->MenuID;
-            $QuantityFromCart = $CartItem->Quantity;
-            $onCart = null;
-            if ($MenuIDFromCart == $MenuID) {
-                $onCart = true;
-            }
-            if ($onCart) {
-                $Quantity = $QuantityFromCart + 1;
-                $Total = $Price * $Quantity;
-                $data = array(
-                    'OrderID' => $OrderID,
-                    'MenuID'  => $MenuID,
-                    'Quantity' => $Quantity,
-                    'Total'    => $Total,
-                    'Checkout' => 0
-                );
-                var_dump($data);
-                $result = $this->db->update($this->_table_Order, $data, array('ID' => $CartItem->ID));
-                var_dump($result);
-                // return $result;
-            }
-            // if (!$onCart) {
-            //     $Quantity = 1;
-            //     $Total = $Price * $Quantity;
-            //     var_dump($Total);
-            //     $data = array(
-            //         'OrderID' => $OrderID,
-            //         'MenuID'  => $MenuID,
-            //         'Quantity' => $Quantity,
-            //         'Total'    => $Total,
-            //         'Checkout' => 0
-            //     );
-            //     $result = $this->db->insert($this->_table_Order, $data);
-            //     var_dump($result);
-            // }
+        $Quantity = $this->CheckItemQuantity($ID);
+        $Quantity = ($Quantity->Quantity) + 1;
+        $data = array(
+            'Quantity' => $Quantity,
+            'Total' => $Quantity * $Price
+        );
+        return $this->db->update($this->_table_Order, $data, array('ID' => $ID));
+    }
+
+    public function updateItemOnCart($ID, $Quantity, $Total)
+    {
+        $data = array(
+            'Quantity' => $Quantity,
+            'Total'    => $Total,
+        );
+        $this->db->update($this->_table_Order, $data, array('ID' => $ID));
+    }
+
+    public function CheckItemPrice($MenuID)
+    {
+        return $this->db->query("SELECT Price FROM $this->_table_Menu WHERE MenuID = $MenuID")->row();
+    }
+
+    public function CheckItemOnCart($MenuID, $OrderID)
+    {
+        $ItemOnCart = $this->db->query("SELECT ID, MenuID AS ItemOnCart FROM $this->_table_Order WHERE OrderID = '$OrderID'")->result_array();
+        $ItemsOnCart = array();
+
+        foreach ($ItemOnCart as $key => $Item) {
+            $ItemsOnCart[] = $Item['ItemOnCart'];
+        }
+
+        if (in_array($MenuID, $ItemsOnCart)) {
+            return 1;
+        } else {
+            return 0;
         }
     }
-}
+
+    public function GetWhereID($MenuID, $OrderID)
+    {
+        return $this->db->query("SELECT ID FROM $this->_table_Order WHERE OrderID = '$OrderID' AND MenuID = $MenuID LIMIT 1")->row();
+    }
+
+    public function CheckItemQuantity($resultID)
+    {
+        return $this->db->query("SELECT Quantity FROM tb_Order WHERE ID = $resultID LIMIT 1")->row();
+    }
+
+    public function AddOtherItemToCart()
+    {
+    }
+}   
     /* End of file: Menu_model.php */
