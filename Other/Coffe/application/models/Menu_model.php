@@ -25,14 +25,14 @@ class Menu_model extends CI_Model
         $MenuID = $this->input->post('MenuID');
         $Price = $this->CheckItemPrice($MenuID);
         $Price = $Price->Price;
-        $Total = $Price * $Quantity;
+        $SubTotal = $Price * $Quantity;
         $OrderID = $this->uuid->v4();
 
         $data = array(
             'OrderID' => $OrderID,
             'MenuID'  => $MenuID,
             'Quantity' => $Quantity,
-            'Total'    => $Total,
+            'SubTotal'    => $SubTotal,
             'Checkout' => 0
         );
 
@@ -53,16 +53,16 @@ class Menu_model extends CI_Model
         $Quantity = ($Quantity->Quantity) + 1;
         $data = array(
             'Quantity' => $Quantity,
-            'Total' => $Quantity * $Price
+            'SubTotal' => $Quantity * $Price
         );
         return $this->db->update($this->_table_Order, $data, array('ID' => $ID));
     }
 
-    public function updateItemOnCart($ID, $Quantity, $Total)
+    public function updateItemOnCart($ID, $Quantity, $SubTotal)
     {
         $data = array(
             'Quantity' => $Quantity,
-            'Total'    => $Total,
+            'Total'    => $SubTotal,
         );
         $this->db->update($this->_table_Order, $data, array('ID' => $ID));
     }
@@ -107,7 +107,7 @@ class Menu_model extends CI_Model
             'OrderID' => $OrderID,
             'MenuID' => $MenuID,
             'Quantity' => $Quantity,
-            'Total' => $Price *  $Quantity,
+            'SubTotal' => $Price *  $Quantity,
             'Checkout' => 0
         );
 
@@ -116,11 +116,43 @@ class Menu_model extends CI_Model
 
     public function getItemOnCart($OrderID)
     {
-        return $this->db->query("SELECT O.ID, M.Menu, O.OrderID, O.MenuID, O.Quantity, M.Image, M.Price
+        return $this->db->query("SELECT O.ID, M.Menu, O.OrderID, O.MenuID, O.Quantity, O.SubTotal, M.Image, M.Price
                                 FROM $this->_table_Order AS O
                                 JOIN $this->_table_Menu AS M
                                 ON O.MenuID = M.MenuID
                                 WHERE OrderID = '$OrderID' AND Checkout = 0")->result_array();
+    }
+
+    public function getTotalOrderOnCart($OrderID)
+    {
+        return $this->db->query("SELECT SUM(subtotal) AS TotalOrder FROM $this->_table_Order WHERE OrderID = '$OrderID' LIMIT 1")->row();
+    }
+
+    public function removeItem($ID)
+    {
+        return $this->db->delete($this->_table_Order, array('ID' => $ID));
+    }
+
+    public function updateQuantity($ID, $MenuID, $Quantity)
+    {
+        $Price = $this->CheckItemPrice($MenuID);
+        $Price = $Price->Price;
+        $SubTotal = $Price * $Quantity;
+        $data = array(
+            'Quantity' => $Quantity,
+            'SubTotal' => $SubTotal
+        );
+
+        return $this->db->update($this->_table_Order, $data, array('ID' => $ID));
+    }
+
+    public function checkoutCart()
+    {
+        $OrderID = $this->input->post('OrderID');
+        $data = array(
+            'Checkout' => 1
+        );
+        return $this->db->update($this->_table_Order, $data, array('OrderID' => $OrderID));
     }
 }   
     /* End of file: Menu_model.php */

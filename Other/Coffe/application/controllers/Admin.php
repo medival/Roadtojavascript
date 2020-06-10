@@ -87,9 +87,39 @@ class Admin extends CI_Controller
             echo 'no item';
         }
         // var_dump($OrderID);
-        $data =  $this->Menu_model->getItemOnCart($OrderID);
+        $data = array(
+            'data' => $this->Menu_model->getItemOnCart($OrderID),
+            'Total' => $this->Menu_model->getTotalOrderOnCart($OrderID)
+        );
+        // $Total = $this->Menu_model->getTotalOrderOnCart($OrderID);
         echo json_encode($data);
     }
+
+    public function removeItemFromChart()
+    {
+        $ID = $this->input->post('ID');
+        $data =  $this->Menu_model->removeItem($ID);
+        echo json_encode($data);
+    }
+
+    public function updateQuantity()
+    {
+        $ID = $this->input->post('ID');
+        $MenuID = $this->input->post('MenuID');
+        $Quantity = $this->input->post('Quantity');
+
+        if ($ID && $MenuID && ($Quantity > 0)) {
+            $data =  $this->Menu_model->updateQuantity($ID, $MenuID, $Quantity);
+            echo json_encode($data);
+        }
+    }
+
+    public function checkoutCart()
+    {
+        $data = $this->Menu_model->checkoutCart();
+        echo json_encode($data);
+    }
+    // public function 
 }
 
 /* End of file: Admin.php */

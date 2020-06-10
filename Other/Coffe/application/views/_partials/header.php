@@ -62,7 +62,9 @@
                             <a href="<?= base_url('admin/menu') ?>">Menu</a>
                         </li>
                         <li class="<?php echo $this->uri->segment(2) == 'order' ? 'is-active' : '' ?>">
-                            <a href="<?= base_url('admin/order') ?>">Order</a>
+                            <a href="<?= base_url('admin/order') ?>"> Order
+                                <i class="fa fa-shopping-cart is-primary" aria-hidden="true"></i>
+                            </a>
                         </li>
                     </div>
                 </div>

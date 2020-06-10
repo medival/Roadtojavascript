@@ -26,8 +26,8 @@ $this->load->view('_partials/header')
                                     <img src="<?= base_url('assets/menu/' . $Menu->Image); ?>">
                                 </figure>
                                 <br>
-                                <p class="title is-5" style="margin-bottom:2rem;"> <?= $Menu->Menu ?> </p>
-                                <p class="subtitle is-6"> <?= $Menu->Price ?> </p>
+                                <p class="title is-5 MenuName" style="margin-bottom:2rem;"> <?= $Menu->Menu ?> </p>
+                                <p class="subtitle is-6"> Rp. <?= $Menu->Price ?> </p>
                             </div>
                         </div>
                         <footer class="card-footer">
@@ -45,6 +45,9 @@ $this->load->view('_partials/footer')
 ?>
 <script>
     $(document).ready(function() {
+
+        capitalize();
+
         const detailCart = document.getElementById('detail_cart');
 
         $('.add_cart').on('click', function() {
@@ -64,11 +67,16 @@ $this->load->view('_partials/footer')
                     Price: Price
                 },
                 success: function(data) {
-                    console.log(data);
                     $(detailCart).html(data)
                 }
             })
         });
 
+        function capitalize() {
+            const MenuName = document.querySelectorAll('p.MenuName');
+            MenuName.forEach(element => {
+                element.style.textTransform = "capitalize"
+            });
+        }
     })
 </script>
