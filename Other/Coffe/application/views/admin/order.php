@@ -82,6 +82,36 @@ $this->load->view('_partials/footer')
                     ShowItemChart();
                     ShowDetailItem();
                     capitalize();
+
+                    const inputQuantity = document.querySelectorAll('input.inputQuantity');
+                    inputQuantity.forEach((element, index) => {
+                        element.addEventListener('change', function() {
+                            const ID = $(element).data('id');
+                            const MenuID = $(element).data('menuid');
+                            const Quantity = $(element).val();
+                            updateQuantity(ID, MenuID, Quantity);
+                        });
+                    })
+
+                    const increaseQuantity = document.querySelectorAll('button.increaseQuantity');
+                    increaseQuantity.forEach((element, index) => {
+                        element.addEventListener('click', function() {
+                            const Quantity = $(element).data('quantity');
+                            const ID = $(element).data('id');
+                            const MenuID = $(element).data('menuid');
+                            updateQuantity(ID, MenuID, Quantity + 1);
+                        });
+                    });
+
+                    const decreaseQuantity = document.querySelectorAll('button.decreaseQuantity');
+                    decreaseQuantity.forEach((element, index) => {
+                        element.addEventListener('click', function() {
+                            const Quantity = $(element).data('quantity');
+                            const ID = $(element).data('id');
+                            const MenuID = $(element).data('menuid');
+                            updateQuantity(ID, MenuID, Quantity - 1);
+                        })
+                    });
                 }
             })
         }
@@ -203,26 +233,28 @@ $this->load->view('_partials/footer')
                     });
                     TableItem.innerHTML = html;
                     TotalOrder.innerHTML = ` Rp. ${data['Total']['TotalOrder']}`;
-
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
                     html = `
-                                    <tr>
-                                        <td width="3rem"></i></td>
-                                        <td colspan=3>
-                                            <p class="subtitle is-6 MenuName">
-                                            There is no order yet
-                                            </p>
-                                        </td>
-                                    </tr>
-                                 `
+                    <tr>
+                    <td width="3rem"></i></td>
+                    <td colspan=3>
+                    <p class="subtitle is-6 MenuName">
+                    There is no order yet
+                    </p>
+                    </td>
+                    </tr>
+                    `
                     TableItem.innerHTML = html;
+                    TotalOrder.innerHTML = ``;
+                    IsCheckout.innerHTML = ``;
                 }
             })
             return false;
         }
 
         function updateQuantity(ID, MenuID, Quantity) {
+            console.log(ID, MenuID, Quantity);
             $.ajax({
                 type: 'POST',
                 url: '<?= base_url('admin/updateQuantity'); ?>',
@@ -236,6 +268,8 @@ $this->load->view('_partials/footer')
                     ShowItemChart();
                     ShowDetailItem();
                     capitalize();
+                    const CheckoutCart = document.getElementById('checkout');
+                    CheckoutCart.addEventListener('click', goCheckoutCart)
 
                     const inputQuantity = document.querySelectorAll('input.inputQuantity');
                     inputQuantity.forEach((element, index) => {
@@ -244,6 +278,9 @@ $this->load->view('_partials/footer')
                             const MenuID = $(element).data('menuid');
                             const Quantity = $(element).val();
                             updateQuantity(ID, MenuID, Quantity);
+                            ShowItemChart();
+                            ShowDetailItem();
+                            capitalize();
                         });
                     })
 
@@ -254,9 +291,11 @@ $this->load->view('_partials/footer')
                             const ID = $(element).data('id');
                             const MenuID = $(element).data('menuid');
                             updateQuantity(ID, MenuID, Quantity + 1);
-                        })
+                            ShowItemChart();
+                            ShowDetailItem();
+                            capitalize();
+                        });
                     });
-
 
                     const decreaseQuantity = document.querySelectorAll('button.decreaseQuantity');
                     decreaseQuantity.forEach((element, index) => {
@@ -265,6 +304,9 @@ $this->load->view('_partials/footer')
                             const ID = $(element).data('id');
                             const MenuID = $(element).data('menuid');
                             updateQuantity(ID, MenuID, Quantity - 1);
+                            ShowItemChart();
+                            ShowDetailItem();
+                            capitalize();
                         })
                     });
                 },
@@ -299,7 +341,9 @@ $this->load->view('_partials/footer')
                 const ID = $(element).data('id');
                 const MenuID = $(element).data('menuid');
                 updateQuantity(ID, MenuID, Quantity + 1);
-            })
+                const CheckoutCart = document.getElementById('checkout');
+                CheckoutCart.addEventListener('click', goCheckoutCart)
+            });
         });
 
         const decreaseQuantity = document.querySelectorAll('button.decreaseQuantity');
@@ -309,11 +353,15 @@ $this->load->view('_partials/footer')
                 const ID = $(element).data('id');
                 const MenuID = $(element).data('menuid');
                 updateQuantity(ID, MenuID, Quantity - 1);
+                const CheckoutCart = document.getElementById('checkout');
+                CheckoutCart.addEventListener('click', goCheckoutCart)
             })
         });
 
         const CheckoutCart = document.getElementById('checkout');
-        CheckoutCart.addEventListener('click', function() {
+        CheckoutCart.addEventListener('click', goCheckoutCart)
+
+        function goCheckoutCart() {
             const OrderID = $(CheckoutCart).data('orderid');
             $.ajax({
                 type: 'post',
@@ -323,6 +371,7 @@ $this->load->view('_partials/footer')
                     OrderID: OrderID
                 },
                 success: function(data) {
+                    alert('Checkout completed successfully');
                     // console.log(data);
                     ShowItemChart();
                     ShowDetailItem();
@@ -359,7 +408,7 @@ $this->load->view('_partials/footer')
                     });
                 }
             })
-        })
+        }
         // console.log(OrderID);
     })
 </script>
